@@ -18,12 +18,14 @@ var scriptToLoad = [
     src = {
         ts: './src/**/*.ts',
         sass: ['./src/style/style.scss', './src/style/style.sass', './src/style/*.scss'],
-        html: './src/**/*.html'
+        html: './src/**/*.html',
+        json: './src/**/*.json'
     },
     dest = {
         sass: './public/css',
         js: './public/js',
-        html: './public'
+        html: './public',
+        json: './public'
     },
     tsProject = ts.createProject('tsconfig.json');
 
@@ -40,6 +42,11 @@ gulp.task('clean:tsc', function () {
 
 gulp.task('clean:html', function () {
     return gulp.src('./public/**/*.html', {read: false})
+        .pipe(clean());
+});
+
+gulp.task('clean:json', function () {
+    return gulp.src('./public/**/*.json', {read: false})
         .pipe(clean());
 });
 
@@ -80,6 +87,12 @@ gulp.task('html', ['clean:html'], function () {
         .pipe(gulp.dest(dest.html));
 });
 
+// MOVE JSON
+gulp.task('json', ['clean:json'], function () {
+    return gulp.src(src.json)
+        .pipe(gulp.dest(dest.json));
+});
+
 gulp.task('concatJs', function(){
     return gulp.src(scriptToLoad)
         .pipe(concat('all.js'))
@@ -87,7 +100,7 @@ gulp.task('concatJs', function(){
         .pipe(gulp.dest(dest.js));
 });
 
-gulp.task('watch', ['tsc', 'sass', 'html', 'concatJs'], function(){
+gulp.task('watch', ['tsc', 'sass', 'html', 'concatJs', 'json'], function(){
     gulp.watch(src.ts, ['tsc']);
     gulp.watch(src.sass, ['sass']);
     gulp.watch(src.html, ['html']);
